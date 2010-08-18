@@ -1,0 +1,44 @@
+﻿"Name"     = 'Command Line Parser'
+"Author"   = 'Arsène von Wyss'
+"Version"  = '0.1'
+"About"    = 'A parser for command line handling similar to NETSH'
+
+"Start Symbol" = <CommandLine>
+
+"Character Mapping" = 'Unicode'
+"Case Sensitive" = 'False'
+
+Comment Line = '#'
+
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
+
+{All Chars} = {All Valid} - {Control Codes}
+{Quoted Literal Chars} = {All Chars} - ["]
+{Unquoted Literal Chars} = {All Chars} - {Whitespace} - [="#]
+
+! -------------------------------------------------
+! Terminals
+! -------------------------------------------------
+
+! The following defines the Whitespace terminal using the {WS}
+! set - which excludes the carriage return and line feed 
+! characters
+
+QuotedLiteral = ('"' {Quoted Literal Chars}* '"')+
+UnquotedLiteral = {Unquoted Literal Chars}+
+
+! -------------------------------------------------
+! Rules
+! -------------------------------------------------
+
+<CommandLine> ::= <LiteralList>
+          |
+
+<LiteralList> ::= <LiteralList> <Literal>
+                | <LiteralList> <Literal> '=' <Literal>
+                | <Literal>
+
+<Literal> ::= QuotedLiteral
+            | UnquotedLiteral
