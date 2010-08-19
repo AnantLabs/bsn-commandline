@@ -3,16 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace bsn.CommandLine.Context {
-	public interface IContextItem {
-		string Description {
-			get;
-		}
-
-		string Name {
-			get;
-		}
-
-		IEnumerable<CommandBase> AvailableCommands();
+	public interface IContextItem: INamedItem {
+		IEnumerable<CommandBase> GetAvailableCommands();
 
 		void WriteCommandHelp(TextWriter writer);
 	}

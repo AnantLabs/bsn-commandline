@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
 	internal class CollectionAddCommand: CollectionCommandBase {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
 	public class ExitCommand: CommandBase {
@@ -20,7 +21,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void Execute(IExecutionContext executionContext) {
+		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
 			executionContext.Context = null;
 		}
 	}

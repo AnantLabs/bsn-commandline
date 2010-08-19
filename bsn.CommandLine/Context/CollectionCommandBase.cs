@@ -1,9 +1,12 @@
-﻿namespace bsn.CommandLine.Context {
+﻿using System;
+using System.Collections.Generic;
+
+namespace bsn.CommandLine.Context {
 	internal abstract class CollectionCommandBase: ActionCommandBase<CollectionBase> {
 		protected CollectionCommandBase(ContextBase owner): base(owner) {}
-
-		protected override System.Collections.Generic.IEnumerable<CollectionBase> AvailableItems() {
-			return ParentContext.Collections;
+		
+		protected override IEnumerable<CollectionBase> GetAvailableItems() {
+			return ParentContext.GetAvailable<CollectionBase>();
 		}
 	}
 }

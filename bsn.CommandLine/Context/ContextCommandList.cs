@@ -15,7 +15,7 @@ namespace bsn.CommandLine.Context {
 				throw new ArgumentNullException("context");
 			}
 			this.child = child;
-			foreach (CommandBase command in context.AvailableCommands()) {
+			foreach (CommandBase command in context.GetAvailableCommands()) {
 				if (!IsNameUsedByChild(command.Name)) {
 					commands.Add(command.Name, command);
 				}

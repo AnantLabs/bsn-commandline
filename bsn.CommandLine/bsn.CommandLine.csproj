@@ -59,6 +59,10 @@
     <Compile Include="Context\CollectionBase.cs" />
     <Compile Include="Context\ConfigurationBase.cs" />
     <Compile Include="Context\IExecutionContext.cs" />
+    <Compile Include="Context\INamedItemContainer.cs" />
+    <Compile Include="Context\INamedItem.cs" />
+    <Compile Include="Context\ITagItem.cs" />
+    <Compile Include="Context\Tag.cs" />
     <Compile Include="Context\ParentContextCommand.cs" />
     <Compile Include="Parser\CliToken.cs" />
     <Compile Include="Parser\ParsedLine.cs" />

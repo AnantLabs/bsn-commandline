@@ -14,7 +14,7 @@ namespace bsn.CommandLine.Context {
 
 		public abstract void WriteCommandHelp(TextWriter writer);
 
-		IEnumerable<CommandBase> IContextItem.AvailableCommands() {
+		IEnumerable<CommandBase> IContextItem.GetAvailableCommands() {
 			yield break;
 		}
 	}

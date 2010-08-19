@@ -21,14 +21,28 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override IEnumerable<CommandBase> AvailableCommands() {
-			foreach (CommandBase command in ParentContext.AvailableCommands()) {
-				yield return new CommandHelpCommand(command, command.Name);
-			}
+		public override IEnumerable<CommandBase> GetAvailableCommands() {
+			yield break;
 		}
 
-		public override void Execute(IExecutionContext executionContext) {
-			ParentContext.WriteCommandHelp(executionContext.Output);
+		public override IEnumerable<ITagItem> GetCommandTags() {
+			yield return new Tag<string>("command", "The command name to get help for.", true);
+		}
+
+		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
+			object commandName;
+			if (tags.TryGetValue("command", out commandName)) {
+				bool commandFound = false;
+				foreach (CommandBase command in Filter(ParentContext.GetAvailable<CommandBase>(), (string)commandName)) {
+					command.WriteCommandHelp(executionContext.Output);
+					commandFound = true;
+				}
+				if (!commandFound) {
+					executionContext.Output.WriteLine("Unknown command: {0}", commandName);
+				}
+			} else {
+				ParentContext.WriteCommandHelp(executionContext.Output);
+			}
 		}
 	}
 }

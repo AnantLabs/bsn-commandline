@@ -2,8 +2,39 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	public abstract class ContextBase: CommandBase {
+	public abstract class ContextBase: CommandBase, INamedItemContainer<CollectionBase>, INamedItemContainer<CommandBase>, INamedItemContainer<ConfigurationBase>, INamedItemContainer<ContextBase> {
+		public ICollection<T> GetAvailable<T>() where T: INamedItem {
+			SortedDictionary<string, T> items = new SortedDictionary<string, T>(StringComparer.OrdinalIgnoreCase);
+			for (ContextBase context = this; context != null; context = context.ParentContext) {
+				INamedItemContainer<T> container = context as INamedItemContainer<T>;
+				if (container != null) {
+					foreach (T item in container.GetItems()) {
+						if (!items.ContainsKey(item.Name)) {
+							items.Add(item.Name, item);
+						}
+					}
+				}
+			}
+			return items.Values;
+		}
+
 		protected ContextBase(ContextBase parentContext): base(parentContext) {}
+
+		IEnumerable<CollectionBase> INamedItemContainer<CollectionBase>.GetItems() {
+			return Collections;
+		}
+
+		IEnumerable<CommandBase> INamedItemContainer<CommandBase>.GetItems() {
+			return GetContextCommands();
+		}
+
+		IEnumerable<ConfigurationBase> INamedItemContainer<ConfigurationBase>.GetItems() {
+			return Configurations;
+		}
+
+		IEnumerable<ContextBase> INamedItemContainer<ContextBase>.GetItems() {
+			return ChildContexts;
+		}
 
 		public abstract IEnumerable<ContextBase> ChildContexts {
 			get;
@@ -21,19 +52,13 @@ namespace bsn.CommandLine.Context {
 			get;
 		}
 
-		public override IEnumerable<CommandBase> AvailableCommands() {
+		public sealed override IEnumerable<CommandBase> GetAvailableCommands() {
 			SortedDictionary<string, CommandBase> localCommands = new SortedDictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
-			foreach (CommandBase builtin in BuiltinCommands()) {
-				localCommands.Add(builtin.Name, builtin);
-			}
-			foreach (CommandBase command in Commands) {
+			foreach (CommandBase command in GetContextCommands()) {
 				localCommands.Add(command.Name, command);
 			}
-			foreach (CommandBase context in ChildContexts) {
-				localCommands.Add(context.Name, context);
-			}
 			if (ParentContext != null) {
-				foreach (CommandBase command in ParentContext.AvailableCommands()) {
+				foreach (CommandBase command in ParentContext.GetAvailableCommands()) {
 					if (!localCommands.ContainsKey(command.Name)) {
 						yield return command;
 					}
@@ -44,7 +69,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override sealed void Execute(IExecutionContext executionContext) {
+		public override sealed void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
 			executionContext.Context = this;
 		}
 
@@ -59,7 +84,7 @@ namespace bsn.CommandLine.Context {
 		public override void WriteCommandHelp(System.IO.TextWriter writer) {
 			writer.WriteLine("The following commands are available:");
 			ContextBase currentContext = null;
-			foreach (CommandBase command in AvailableCommands()) {
+			foreach (CommandBase command in GetAvailableCommands()) {
 				if (command.ParentContext != currentContext) {
 					currentContext = command.ParentContext;
 					writer.WriteLine();
@@ -73,7 +98,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		private IEnumerable<CommandBase> BuiltinCommands() {
+		private IEnumerable<CommandBase> GetContextCommands() {
 			yield return new CollectionAddCommand(this);
 			yield return new CollectionDeleteCommand(this);
 			yield return new ConfigurationShowCommand(this);
@@ -82,6 +107,12 @@ namespace bsn.CommandLine.Context {
 			yield return new ContextHelpCommand(this, "help");
 			if (ParentContext != null) {
 				yield return new ParentContextCommand(this);
+			}
+			foreach (CommandBase command in Commands) {
+				yield return command;
+			}
+			foreach (ContextBase context in ChildContexts) {
+				yield return context;
 			}
 		}
 	}

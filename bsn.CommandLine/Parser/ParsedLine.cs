@@ -5,7 +5,7 @@ using bsn.GoldParser.Semantic;
 
 namespace bsn.CommandLine.Parser {
 	public class ParsedLine: CliToken {
-		private readonly List<KeyValuePair<string, string>> named = new List<KeyValuePair<string, string>>();
+		private readonly Dictionary<string, string> named = new Dictionary<string, string>();
 		private readonly List<string> unnamed = new List<string>();
 
 		[Rule("<CommandLine> ::=")]
@@ -15,7 +15,7 @@ namespace bsn.CommandLine.Parser {
 		public ParsedLine(LiteralList list): this() {
 			while (list != null) {
 				if (list.Name != null) {
-					named.Insert(0, new KeyValuePair<string, string>(list.Name, list.Value));
+					named.Add(list.Name, list.Value);
 				} else {
 					unnamed.Insert(0, list.Value);
 				}
@@ -29,13 +29,13 @@ namespace bsn.CommandLine.Parser {
 			}
 		}
 
-		public List<KeyValuePair<string, string>> Named {
+		public IDictionary<string, string> Named {
 			get {
 				return named;
 			}
 		}
 
-		public List<string> Unnamed {
+		public IList<string> Unnamed {
 			get {
 				return unnamed;
 			}

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 using bsn.CommandLine.Context;
 using bsn.CommandLine.Parser;
 
 namespace bsn.CommandLine {
 	public class Runner {
+		private static readonly Regex isHelp = new Regex(@"^(\?|help)$", RegexOptions.CultureInvariant|RegexOptions.ExplicitCapture|RegexOptions.IgnoreCase);
 		private readonly IExecutionContext executionContext;
 
 		public Runner(IExecutionContext executionContext) {
@@ -30,8 +32,9 @@ namespace bsn.CommandLine {
 				try {
 					ParsedLine commandLine = CommandLineParser.Parse(executionContext.Input.ReadLine());
 					CommandBase command = executionContext.Context;
-					foreach (string s in commandLine.Unnamed) {
-						List<CommandBase> availableCommands = new List<CommandBase>(CommandBase.Filter(command.AvailableCommands(), s));
+					do {
+						string s = commandLine.Unnamed[0];
+						List<CommandBase> availableCommands = new List<CommandBase>(CommandBase.Filter(command.GetAvailableCommands(), s));
 						if (availableCommands.Count < 1) {
 							if (command == executionContext.Context) {
 								output.WriteLine("The following command was not found: {0}", s);
@@ -47,9 +50,14 @@ namespace bsn.CommandLine {
 							break;
 						}
 						command = availableCommands[0];
-					}
+						commandLine.Unnamed.RemoveAt(0);
+					} while (commandLine.Unnamed.Count > 0);
 					if (command != executionContext.Context) {
-						command.Execute(executionContext);
+						if ((commandLine.Unnamed.Count == 1) && (isHelp.IsMatch(commandLine.Unnamed[0]))) {
+							command.WriteCommandHelp(executionContext.Output);
+						} else {
+							command.ExecuteInternal(executionContext, commandLine.Named, commandLine.Unnamed);
+						}
 					}
 				} catch (SystemException ex) {
 					output.WriteLine("Error: {0}", ex.Message);

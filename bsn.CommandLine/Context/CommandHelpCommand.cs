@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace bsn.CommandLine.Context {
@@ -24,7 +25,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void Execute(IExecutionContext executionContext) {
+		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
 			owner.WriteCommandHelp(executionContext.Output);
 		}
 	}
