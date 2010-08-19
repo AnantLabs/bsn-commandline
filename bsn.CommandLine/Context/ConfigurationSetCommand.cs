@@ -5,8 +5,8 @@ namespace bsn.CommandLine.Context {
 	internal class ConfigurationSetCommand<TExecutionContext>: ConfigurationCommandBase<TExecutionContext, IConfigurationWrite<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		public ConfigurationSetCommand(ContextBase<TExecutionContext> owner): base(owner) {}
 
-		protected override CommandBase<TExecutionContext> CreateActionCommand(IConfigurationWrite<TExecutionContext> item) {
-			return new ConfigurationSetActionCommand<TExecutionContext>(this, item);
+		protected override CommandActionCommandBase<TExecutionContext, IConfigurationWrite<TExecutionContext>> CreateActionCommand(IConfigurationWrite<TExecutionContext> item) {
+			return new ConfigurationSetActionCommand<TExecutionContext, IConfigurationWrite<TExecutionContext>>(this, item);
 		}
 	}
 }

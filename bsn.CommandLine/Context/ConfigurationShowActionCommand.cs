@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal class ConfigurationShowActionCommand<TExecutionContext>: CommandActionCommandBase<TExecutionContext, IConfigurationRead<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
-		public ConfigurationShowActionCommand(CommandBase<TExecutionContext> owner, IConfigurationRead<TExecutionContext> item): base(owner, item) {}
-
-		public override IEnumerable<ITagItem> GetCommandTags() {
-			return Item.GetReadParameters();
-		}
+	internal class ConfigurationShowActionCommand<TExecutionContext, TItem>: CommandActionCommandBase<TExecutionContext, TItem> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: class, IConfigurationRead<TExecutionContext> {
+		public ConfigurationShowActionCommand(CommandBase<TExecutionContext> owner, TItem item): base(owner, item) {}
 
 		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
 			Item.ShowConfiguration(executionContext, tags);
+		}
+
+		public override IEnumerable<ITagItem> GetCommandTags() {
+			return Item.GetReadParameters();
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -14,6 +13,12 @@ namespace bsn.CommandLine.Context {
 			this.parentCommand = parentCommand;
 		}
 
+		public CommandBase<TExecutionContext> ParentCommand {
+			get {
+				return parentCommand;
+			}
+		}
+
 		public ContextBase<TExecutionContext> ParentContext {
 			get {
 				for (CommandBase<TExecutionContext> command = parentCommand; command != null; command = command.parentCommand) {
@@ -26,16 +31,54 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public CommandBase<TExecutionContext> ParentCommand {
-			get {
-				return parentCommand;
-			}
-		}
-
 		public abstract void Execute(TExecutionContext executionContext, IDictionary<string, object> tags);
+
+		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
+			yield break;
+		}
 
 		public virtual IEnumerable<ITagItem> GetCommandTags() {
 			yield break;
+		}
+
+		public override void WriteItemHelp(TextWriter writer) {
+			writer.WriteLine(Description);
+			List<ITagItem> parameters = new List<ITagItem>(GetCommandTags());
+			if (parameters.Count > 0) {
+				writer.WriteLine();
+				writer.WriteLine("Usage:");
+				WriteCommandName(writer);
+				foreach (ITagItem tag in parameters) {
+					writer.Write(" [");
+					writer.Write(tag.Name);
+					writer.Write("=]");
+					writer.Write(tag.PatternHelp);
+				}
+				writer.WriteLine();
+				writer.WriteLine();
+				writer.WriteLine("Parameters:");
+				foreach (ITagItem parameter in parameters) {
+					writer.WriteLine(" {0,-14} - {1}", parameter.Name, parameter.Description);
+				}
+			}
+			NamedItemAttribute attribute;
+			if (TryGetNameAttribute(GetType(), out attribute) && (!string.IsNullOrEmpty(attribute.Remarks))) {
+				writer.WriteLine();
+				writer.WriteLine("Remarks:");
+				writer.WriteLine(attribute.Remarks);
+			}
+			using (IEnumerator<CommandBase<TExecutionContext>> enumerator = GetAvailableCommands().GetEnumerator()) {
+				if (enumerator.MoveNext()) {
+					writer.WriteLine();
+					writer.WriteLine("Available subcommands:");
+					do {
+						CommandBase<TExecutionContext> current = enumerator.Current;
+						Debug.Assert(current != null);
+						writer.Write(' ');
+						current.WriteNameLine(writer, Name);
+					} while (enumerator.MoveNext());
+				}
+			}
 		}
 
 		internal void ExecuteInternal(TExecutionContext executionContext, IDictionary<string, string> namedTags, IList<string> unnamedTags) {
@@ -92,56 +135,12 @@ namespace bsn.CommandLine.Context {
 			Execute(executionContext, tags);
 		}
 
-		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
-			yield break;
-		}
-
-		private void WriteCommandName(System.IO.TextWriter writer) {
+		private void WriteCommandName(TextWriter writer) {
 			if ((parentCommand != null) && (!(parentCommand is ContextBase<TExecutionContext>))) {
 				parentCommand.WriteCommandName(writer);
 			}
 			writer.Write(' ');
 			writer.Write(Name);
-		}
-
-		public override void WriteItemHelp(System.IO.TextWriter writer) {
-			writer.WriteLine(Description);
-			List<ITagItem> parameters = new List<ITagItem>(GetCommandTags());
-			if (parameters.Count > 0) {
-				writer.WriteLine();
-				writer.WriteLine("Usage:");
-				WriteCommandName(writer);
-				foreach (ITagItem tag in parameters) {
-					writer.Write(" [");
-					writer.Write(tag.Name);
-					writer.Write("=]");
-					writer.Write(tag.PatternHelp);
-				}
-				writer.WriteLine();
-				writer.WriteLine();
-				writer.WriteLine("Parameters:");
-				foreach (ITagItem parameter in parameters) {
-					writer.WriteLine(" {0,-14} - {1}", parameter.Name, parameter.Description);
-				}
-			}
-			NamedItemAttribute attribute;
-			if (TryGetNameAttribute(GetType(), out attribute) && (!string.IsNullOrEmpty(attribute.Remarks))) {
-				writer.WriteLine();
-				writer.WriteLine("Remarks:");
-				writer.WriteLine(attribute.Remarks);
-			}
-			using (IEnumerator<CommandBase<TExecutionContext>> enumerator = GetAvailableCommands().GetEnumerator()) {
-				if (enumerator.MoveNext()) {
-					writer.WriteLine();
-					writer.WriteLine("Available subcommands:");
-					do {
-						CommandBase<TExecutionContext> current = enumerator.Current;
-						Debug.Assert(current != null);
-						writer.Write(' ');
-						current.WriteNameLine(writer, Name);
-					} while (enumerator.MoveNext());
-				}
-			}
 		}
 	}
 }

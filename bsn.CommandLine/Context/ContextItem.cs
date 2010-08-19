@@ -31,7 +31,9 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		protected ContextItem() {}
+		public virtual void WriteItemHelp(TextWriter writer) {
+			WriteNameLine(writer, null);
+		}
 
 		protected internal void WriteNameLine(TextWriter writer, string prefix) {
 			int padding = 14;
@@ -47,10 +49,6 @@ namespace bsn.CommandLine.Context {
 			}
 			writer.Write(" - ");
 			writer.WriteLine(Description);
-		}
-
-		public virtual void WriteItemHelp(TextWriter writer) {
-			WriteNameLine(writer, null);
 		}
 
 		public virtual string Name {

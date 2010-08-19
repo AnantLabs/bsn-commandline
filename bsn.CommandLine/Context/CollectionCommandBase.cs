@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal abstract class CollectionCommandBase<TExecutionContext>: ActionCommandBase<TExecutionContext, CollectionBase<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+	internal abstract class CollectionCommandBase<TExecutionContext, TItem>: ActionCommandBase<TExecutionContext, TItem> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: class, INamedItem {
 		protected CollectionCommandBase(ContextBase<TExecutionContext> owner): base(owner) {}
 
-		protected override IEnumerable<CollectionBase<TExecutionContext>> GetAvailableItems() {
-			return ParentContext.GetAvailable<CollectionBase<TExecutionContext>>();
+		protected override IEnumerable<ContextItem<TExecutionContext>> GetAvailableItems() {
+			foreach (CollectionBase<TExecutionContext> collectionItem in ParentContext.GetAvailable<CollectionBase<TExecutionContext>>()) {
+				yield return collectionItem;
+			}
 		}
 	}
 }

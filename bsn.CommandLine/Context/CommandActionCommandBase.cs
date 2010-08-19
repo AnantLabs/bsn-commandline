@@ -1,19 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace bsn.CommandLine.Context {
-	internal abstract class CommandActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: INamedItem {
-		private readonly CommandBase<TExecutionContext> owner;
+	internal abstract class CommandActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: class, INamedItem {
 		private readonly TItem item;
+		private readonly CommandBase<TExecutionContext> owner;
 
 		public CommandActionCommandBase(CommandBase<TExecutionContext> owner, TItem item): base(owner) {
 			this.owner = owner;
 			this.item = item;
-		}
-
-		public override string Name {
-			get {
-				return item.Name;
-			}
 		}
 
 		public override string Description {
@@ -25,6 +19,12 @@ namespace bsn.CommandLine.Context {
 		public TItem Item {
 			get {
 				return item;
+			}
+		}
+
+		public override string Name {
+			get {
+				return item.Name;
 			}
 		}
 	}
