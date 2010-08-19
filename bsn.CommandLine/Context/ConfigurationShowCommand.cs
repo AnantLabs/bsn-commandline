@@ -1,23 +1,12 @@
 ﻿using System;
 
 namespace bsn.CommandLine.Context {
+	[NamedItem("show", "Displays configuration information.")]
 	internal class ConfigurationShowCommand<TExecutionContext>: ConfigurationCommandBase<TExecutionContext, IConfigurationRead<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		public ConfigurationShowCommand(ContextBase<TExecutionContext> owner): base(owner) {}
 
-		public override string Description {
-			get {
-				return "Displays information.";
-			}
-		}
-
-		public override string Name {
-			get {
-				return "show";
-			}
-		}
-
 		protected override CommandBase<TExecutionContext> CreateActionCommand(IConfigurationRead<TExecutionContext> item) {
-			return new ConfigurationShowActionCommand<TExecutionContext>(ParentContext, item);
+			return new ConfigurationShowActionCommand<TExecutionContext>(this, item);
 		}
 	}
 }

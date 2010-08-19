@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,15 +8,27 @@ using System.Text;
 
 namespace bsn.CommandLine.Context {
 	public abstract class CommandBase<TExecutionContext>: ContextItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
-		private readonly ContextBase<TExecutionContext> parentContext;
+		private readonly CommandBase<TExecutionContext> parentCommand;
 
-		protected CommandBase(ContextBase<TExecutionContext> parentContext) {
-			this.parentContext = parentContext;
+		protected CommandBase(CommandBase<TExecutionContext> parentCommand) {
+			this.parentCommand = parentCommand;
 		}
 
 		public ContextBase<TExecutionContext> ParentContext {
 			get {
-				return parentContext;
+				for (CommandBase<TExecutionContext> command = parentCommand; command != null; command = command.parentCommand) {
+					ContextBase<TExecutionContext> result = command as ContextBase<TExecutionContext>;
+					if (result != null) {
+						return result;
+					}
+				}
+				return null;
+			}
+		}
+
+		public CommandBase<TExecutionContext> ParentCommand {
+			get {
+				return parentCommand;
 			}
 		}
 
@@ -80,19 +93,51 @@ namespace bsn.CommandLine.Context {
 		}
 
 		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
-			yield return new CommandHelpCommand<TExecutionContext>(this, "?");
-			yield return new CommandHelpCommand<TExecutionContext>(this, "help");
+			yield break;
 		}
 
-		public override void WriteItemHelp(TextWriter writer) {
+		private void WriteCommandName(System.IO.TextWriter writer) {
+			if ((parentCommand != null) && (!(parentCommand is ContextBase<TExecutionContext>))) {
+				parentCommand.WriteCommandName(writer);
+			}
+			writer.Write(' ');
+			writer.Write(Name);
+		}
+
+		public override void WriteItemHelp(System.IO.TextWriter writer) {
 			writer.WriteLine(Description);
+			List<ITagItem> parameters = new List<ITagItem>(GetCommandTags());
+			if (parameters.Count > 0) {
+				writer.WriteLine();
+				writer.WriteLine("Usage:");
+				WriteCommandName(writer);
+				foreach (ITagItem tag in parameters) {
+					writer.Write(" [");
+					writer.Write(tag.Name);
+					writer.Write("=]");
+					writer.Write(tag.PatternHelp);
+				}
+				writer.WriteLine();
+				writer.WriteLine();
+				writer.WriteLine("Parameters:");
+				foreach (ITagItem parameter in parameters) {
+					writer.WriteLine(" {0,-14} - {1}", parameter.Name, parameter.Description);
+				}
+			}
+			NamedItemAttribute attribute;
+			if (TryGetNameAttribute(GetType(), out attribute) && (!string.IsNullOrEmpty(attribute.Remarks))) {
+				writer.WriteLine();
+				writer.WriteLine("Remarks:");
+				writer.WriteLine(attribute.Remarks);
+			}
 			using (IEnumerator<CommandBase<TExecutionContext>> enumerator = GetAvailableCommands().GetEnumerator()) {
 				if (enumerator.MoveNext()) {
 					writer.WriteLine();
-					writer.WriteLine("Available commands:");
+					writer.WriteLine("Available subcommands:");
 					do {
 						CommandBase<TExecutionContext> current = enumerator.Current;
 						Debug.Assert(current != null);
+						writer.Write(' ');
 						current.WriteNameLine(writer, Name);
 					} while (enumerator.MoveNext());
 				}

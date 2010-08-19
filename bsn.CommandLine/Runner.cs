@@ -44,6 +44,7 @@ namespace bsn.CommandLine {
 						if (availableCommands.Count > 1) {
 							output.WriteLine("Ambiguous command name for '{0}':", s);
 							foreach (CommandBase<TExecutionContext> availableCommand in availableCommands) {
+								output.Write(' ');
 								output.WriteLine(availableCommand.Name);
 							}
 							command = executionContext.Context;

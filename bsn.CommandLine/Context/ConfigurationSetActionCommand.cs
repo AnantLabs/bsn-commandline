@@ -2,7 +2,7 @@
 
 namespace bsn.CommandLine.Context {
 	internal class ConfigurationSetActionCommand<TExecutionContext>: CommandActionCommandBase<TExecutionContext, IConfigurationWrite<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
-		public ConfigurationSetActionCommand(ContextBase<TExecutionContext> parentContext, IConfigurationWrite<TExecutionContext> item): base(parentContext, item) {}
+		public ConfigurationSetActionCommand(CommandBase<TExecutionContext> owner, IConfigurationWrite<TExecutionContext> item): base(owner, item) {}
 
 		public override IEnumerable<ITagItem> GetCommandTags() {
 			return Item.GetWriteParameters();

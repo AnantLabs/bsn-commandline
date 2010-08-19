@@ -46,7 +46,6 @@
     <Compile Include="Context\CollectionDeleteCommand.cs" />
     <Compile Include="Context\CommandActionCommandBase.cs" />
     <Compile Include="Context\CommandBase.cs" />
-    <Compile Include="Context\CommandHelpCommand.cs" />
     <Compile Include="Context\ConfigurationCommandBase.cs" />
     <Compile Include="Context\ConfigurationSetActionCommand.cs" />
     <Compile Include="Context\ConfigurationSetCommand.cs" />
@@ -67,6 +66,7 @@
     <Compile Include="Context\ITagItem.cs" />
     <Compile Include="Context\Tag.cs" />
     <Compile Include="Context\ParentContextCommand.cs" />
+    <Compile Include="NamedItemAttibute.cs" />
     <Compile Include="Parser\CliToken.cs" />
     <Compile Include="Parser\ParsedLine.cs" />
     <Compile Include="Parser\CommandLineParser.cs" />

@@ -7,20 +7,28 @@ namespace bsn.CommandLine.Context {
 	                                                      INamedItemContainer<ContextBase<TExecutionContext>>, INamedItem where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		protected ContextBase(ContextBase<TExecutionContext> parentContext): base(parentContext) {}
 
-		public abstract IEnumerable<ContextBase<TExecutionContext>> ChildContexts {
-			get;
+		public virtual IEnumerable<ContextBase<TExecutionContext>> ChildContexts {
+			get {
+				yield break;
+			}
 		}
 
-		public abstract IEnumerable<CollectionBase<TExecutionContext>> Collections {
-			get;
+		public virtual IEnumerable<CollectionBase<TExecutionContext>> Collections {
+			get {
+				yield break;
+			}
 		}
 
-		public abstract IEnumerable<CommandBase<TExecutionContext>> Commands {
-			get;
+		public virtual IEnumerable<CommandBase<TExecutionContext>> Commands {
+			get {
+				yield break;
+			}
 		}
 
-		public abstract IEnumerable<ConfigurationBase<TExecutionContext>> Configurations {
-			get;
+		public virtual IEnumerable<ConfigurationBase<TExecutionContext>> Configurations {
+			get {
+				yield break;
+			}
 		}
 
 		public override sealed void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
@@ -57,7 +65,7 @@ namespace bsn.CommandLine.Context {
 			}
 			if (ParentContext != null) {
 				foreach (CommandBase<TExecutionContext> command in ParentContext.GetAvailableCommands()) {
-					if (!localCommands.ContainsKey(command.Name)) {
+					if (!(ReferenceEquals(command, this) || localCommands.ContainsKey(command.Name))) {
 						yield return command;
 					}
 				}
@@ -80,6 +88,7 @@ namespace bsn.CommandLine.Context {
 						writer.WriteLine("Commands inherited from {0} context:", currentContext.Name);
 					}
 				}
+				writer.Write(' ');
 				command.WriteNameLine(writer, null);
 			}
 		}

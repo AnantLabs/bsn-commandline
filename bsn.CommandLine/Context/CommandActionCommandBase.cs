@@ -1,8 +1,12 @@
-﻿namespace bsn.CommandLine.Context {
+﻿using System.Collections.Generic;
+
+namespace bsn.CommandLine.Context {
 	internal abstract class CommandActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: INamedItem {
+		private readonly CommandBase<TExecutionContext> owner;
 		private readonly TItem item;
 
-		public CommandActionCommandBase(ContextBase<TExecutionContext> parentContext, TItem item): base(parentContext) {
+		public CommandActionCommandBase(CommandBase<TExecutionContext> owner, TItem item): base(owner) {
+			this.owner = owner;
 			this.item = item;
 		}
 

@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
+	[NamedItem("?", "Displays a list of the available commands.")]
 	internal class ContextHelpCommand<TExecutionContext>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly string name;
 
-		public ContextHelpCommand(ContextBase<TExecutionContext> parentContext, string name): base(parentContext) {
+		public ContextHelpCommand(ContextBase<TExecutionContext> owner, string name): base(owner) {
 			this.name = name;
-		}
-
-		public override string Description {
-			get {
-				return "Displays a list of commands.";
-			}
 		}
 
 		public override string Name {

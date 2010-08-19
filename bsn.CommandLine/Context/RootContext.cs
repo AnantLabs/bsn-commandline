@@ -39,7 +39,7 @@ namespace bsn.CommandLine.Context {
 
 		public override string Description {
 			get {
-				return "The root context.";
+				return "";
 			}
 		}
 
