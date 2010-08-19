@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using bsn.GoldParser.Semantic;
 
 namespace bsn.CommandLine.Parser {
-	public class CommandLine: CliToken {
-		private List<KeyValuePair<string, string>> named = new List<KeyValuePair<string, string>>();
-		private List<string> unnamed = new List<string>();
+	public class ParsedLine: CliToken {
+		private readonly List<KeyValuePair<string, string>> named = new List<KeyValuePair<string, string>>();
+		private readonly List<string> unnamed = new List<string>();
 
 		[Rule("<CommandLine> ::=")]
-		public CommandLine() {
-		}
+		public ParsedLine() {}
 
 		[Rule("<CommandLine> ::= <LiteralList>")]
-		public CommandLine(LiteralList list) : this() {
+		public ParsedLine(LiteralList list): this() {
 			while (list != null) {
 				if (list.Name != null) {
 					named.Insert(0, new KeyValuePair<string, string>(list.Name, list.Value));

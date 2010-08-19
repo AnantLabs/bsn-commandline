@@ -28,6 +28,7 @@ namespace bsn.CommandLine.Parser {
 				return name;
 			}
 		}
+
 		public LiteralList Previous {
 			get {
 				return previous;

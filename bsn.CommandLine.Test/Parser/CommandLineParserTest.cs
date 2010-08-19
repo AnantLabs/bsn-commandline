@@ -27,42 +27,42 @@ namespace bsn.CommandLine.Parser {
 
 		[Test]
 		public void ParseEmpty() {
-			CommandLine commandLine = CommandLineParser.Parse("");
-			Expect(commandLine.IsEmpty, EqualTo(true));
+			ParsedLine parsedLine = CommandLineParser.Parse("");
+			Expect(parsedLine.IsEmpty, EqualTo(true));
 		}
 
 		[Test]
 		public void ParseEmptyWithComment() {
-			CommandLine commandLine = CommandLineParser.Parse("# nothing to do here");
-			Expect(commandLine.IsEmpty, EqualTo(true));
+			ParsedLine parsedLine = CommandLineParser.Parse("# nothing to do here");
+			Expect(parsedLine.IsEmpty, EqualTo(true));
 		}
 
 		[Test]
 		public void ParseDotsCommand() {
-			CommandLine commandLine = CommandLineParser.Parse("..");
-			Expect(commandLine.IsEmpty, EqualTo(false));
-			Expect(commandLine.Unnamed, Is.EquivalentTo(new[] {".."}));
+			ParsedLine parsedLine = CommandLineParser.Parse("..");
+			Expect(parsedLine.IsEmpty, EqualTo(false));
+			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] {".."}));
 		}
 
 		[Test]
 		public void ParseQuestionmarkCommand() {
-			CommandLine commandLine = CommandLineParser.Parse("?");
-			Expect(commandLine.IsEmpty, EqualTo(false));
-			Expect(commandLine.Unnamed, Is.EquivalentTo(new[] { "?" }));
+			ParsedLine parsedLine = CommandLineParser.Parse("?");
+			Expect(parsedLine.IsEmpty, EqualTo(false));
+			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] { "?" }));
 		}
 
 		[Test]
 		public void ParseSingleCommand() {
-			CommandLine commandLine = CommandLineParser.Parse("help");
-			Expect(commandLine.IsEmpty, EqualTo(false));
-			Expect(commandLine.Unnamed, Is.EquivalentTo(new[] { "help" }));
+			ParsedLine parsedLine = CommandLineParser.Parse("help");
+			Expect(parsedLine.IsEmpty, EqualTo(false));
+			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] { "help" }));
 		}
 
 		[Test]
 		public void ParseQuotedCommand() {
-			CommandLine commandLine = CommandLineParser.Parse(@"""help""");
-			Expect(commandLine.IsEmpty, EqualTo(false));
-			Expect(commandLine.Unnamed, Is.EquivalentTo(new[] { "help" }));
+			ParsedLine parsedLine = CommandLineParser.Parse(@"""help""");
+			Expect(parsedLine.IsEmpty, EqualTo(false));
+			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] { "help" }));
 		}
 	}
 }
