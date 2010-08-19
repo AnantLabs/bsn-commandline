@@ -15,6 +15,7 @@ namespace bsn.CommandLine {
 				throw new ArgumentNullException("executionContext");
 			}
 			this.executionContext = executionContext;
+			CommandLineParser.GetSemanticActions();
 		}
 
 		public void Run() {
