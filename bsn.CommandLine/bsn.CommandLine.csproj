@@ -44,10 +44,13 @@
     <Compile Include="Context\CollectionAddCommand.cs" />
     <Compile Include="Context\CollectionCommandBase.cs" />
     <Compile Include="Context\CollectionDeleteCommand.cs" />
+    <Compile Include="Context\CommandActionCommandBase.cs" />
     <Compile Include="Context\CommandBase.cs" />
     <Compile Include="Context\CommandHelpCommand.cs" />
     <Compile Include="Context\ConfigurationCommandBase.cs" />
+    <Compile Include="Context\ConfigurationSetActionCommand.cs" />
     <Compile Include="Context\ConfigurationSetCommand.cs" />
+    <Compile Include="Context\ConfigurationShowActionCommand.cs" />
     <Compile Include="Context\ConfigurationShowCommand.cs" />
     <Compile Include="Context\ContextBase.cs" />
     <Compile Include="Context\ContextCommandList.cs" />
@@ -55,7 +58,7 @@
     <Compile Include="Context\ExitCommand.cs" />
     <Compile Include="Context\IConfigurationRead.cs" />
     <Compile Include="Context\IConfigurationWrite.cs" />
-    <Compile Include="Context\IContextItem.cs" />
+    <Compile Include="Context\ContextItem.cs" />
     <Compile Include="Context\CollectionBase.cs" />
     <Compile Include="Context\ConfigurationBase.cs" />
     <Compile Include="Context\IExecutionContext.cs" />

@@ -67,7 +67,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void WriteCommandHelp(TextWriter writer) {
+		public override void WriteItemHelp(TextWriter writer) {
 			writer.WriteLine("The following commands are available:");
 			ContextBase<TExecutionContext> currentContext = null;
 			foreach (CommandBase<TExecutionContext> command in GetAvailableCommands()) {

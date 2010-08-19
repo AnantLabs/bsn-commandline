@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
 namespace bsn.CommandLine.Context {
-	public abstract class CommandBase<TExecutionContext>: IContextItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
-		public static IEnumerable<TItem> Filter<TItem>(IEnumerable<TItem> items, string startsWith) where TItem: INamedItem {
-			foreach (TItem item in items) {
-				if (string.IsNullOrEmpty(startsWith) || item.Name.StartsWith(startsWith, StringComparison.OrdinalIgnoreCase)) {
-					yield return item;
-				}
-			}
-		}
-
+	public abstract class CommandBase<TExecutionContext>: ContextItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly ContextBase<TExecutionContext> parentContext;
 
 		protected CommandBase(ContextBase<TExecutionContext> parentContext) {
@@ -32,22 +25,6 @@ namespace bsn.CommandLine.Context {
 			yield break;
 		}
 
-		protected internal void WriteNameLine(TextWriter writer, string prefix) {
-			int padding = 14;
-			if (!string.IsNullOrEmpty(prefix)) {
-				writer.Write(prefix);
-				writer.Write(' ');
-				padding -= (prefix.Length+1);
-			}
-			writer.Write(Name);
-			padding -= Name.Length;
-			while (padding-- > 0) {
-				writer.Write(' ');
-			}
-			writer.Write(" - ");
-			writer.WriteLine(Description);
-		}
-
 		internal void ExecuteInternal(TExecutionContext executionContext, IDictionary<string, string> namedTags, IList<string> unnamedTags) {
 			Dictionary<string, object> tags = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 			foreach (ITagItem tag in GetCommandTags()) {
@@ -58,7 +35,28 @@ namespace bsn.CommandLine.Context {
 					stringValue = unnamedTags[0];
 					unnamedTags.RemoveAt(0);
 				}
-				if (!(tag.Optional && string.IsNullOrEmpty(stringValue))) {
+				if (stringValue == null) {
+					object defaultValue;
+					bool useDefault = tag.TryGetDefault(out defaultValue);
+					if (!tag.Optional) {
+						StringBuilder prompt = new StringBuilder();
+						prompt.Append(' ');
+						prompt.Append(tag.Name);
+						if (useDefault) {
+							prompt.AppendFormat(CultureInfo.InvariantCulture, "[{0}]", defaultValue);
+						}
+						prompt.Append(": ");
+						executionContext.Output.Write(prompt);
+						stringValue = executionContext.Input.ReadLine();
+						useDefault &= string.IsNullOrEmpty(stringValue);
+						if (!useDefault) {
+							tags.Add(tag.Name, tag.ParseValue(stringValue));
+						}
+					}
+					if (useDefault) {
+						tags.Add(tag.Name, defaultValue);
+					}
+				} else {
 					tags.Add(tag.Name, tag.ParseValue(stringValue));
 				}
 			}
@@ -81,15 +79,12 @@ namespace bsn.CommandLine.Context {
 			Execute(executionContext, tags);
 		}
 
-		public abstract string Name {
-			get;
+		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
+			yield return new CommandHelpCommand<TExecutionContext>(this, "?");
+			yield return new CommandHelpCommand<TExecutionContext>(this, "help");
 		}
 
-		public abstract string Description {
-			get;
-		}
-
-		public virtual void WriteCommandHelp(TextWriter writer) {
+		public override void WriteItemHelp(TextWriter writer) {
 			writer.WriteLine(Description);
 			using (IEnumerator<CommandBase<TExecutionContext>> enumerator = GetAvailableCommands().GetEnumerator()) {
 				if (enumerator.MoveNext()) {
@@ -102,11 +97,6 @@ namespace bsn.CommandLine.Context {
 					} while (enumerator.MoveNext());
 				}
 			}
-		}
-
-		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
-			yield return new CommandHelpCommand<TExecutionContext>(this, "?");
-			yield return new CommandHelpCommand<TExecutionContext>(this, "help");
 		}
 	}
 }

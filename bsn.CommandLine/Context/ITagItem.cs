@@ -10,6 +10,8 @@ namespace bsn.CommandLine.Context {
 			get;
 		}
 
-		object ParseValue(string value);
+		object ParseValue(string stringValue);
+
+		bool TryGetDefault(out object value);
 	}
 }

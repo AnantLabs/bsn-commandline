@@ -32,7 +32,7 @@ namespace bsn.CommandLine {
 				try {
 					ParsedLine commandLine = CommandLineParser.Parse(executionContext.Input.ReadLine());
 					CommandBase<TExecutionContext> command = executionContext.Context;
-					do {
+					while (commandLine.Unnamed.Count > 0) {
 						string s = commandLine.Unnamed[0];
 						List<CommandBase<TExecutionContext>> availableCommands = new List<CommandBase<TExecutionContext>>(CommandBase<TExecutionContext>.Filter(command.GetAvailableCommands(), s));
 						if (availableCommands.Count < 1) {
@@ -51,10 +51,10 @@ namespace bsn.CommandLine {
 						}
 						command = availableCommands[0];
 						commandLine.Unnamed.RemoveAt(0);
-					} while (commandLine.Unnamed.Count > 0);
+					}
 					if (command != executionContext.Context) {
 						if ((commandLine.Unnamed.Count == 1) && (isHelp.IsMatch(commandLine.Unnamed[0]))) {
-							command.WriteCommandHelp(executionContext.Output);
+							command.WriteItemHelp(executionContext.Output);
 						} else {
 							command.ExecuteInternal(executionContext, commandLine.Named, commandLine.Unnamed);
 						}

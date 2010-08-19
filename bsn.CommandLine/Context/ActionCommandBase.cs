@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal abstract class ActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: class, IContextItem<TExecutionContext> {
+	internal abstract class ActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: INamedItem {
 		protected ActionCommandBase(ContextBase<TExecutionContext> owner): base(owner) {}
 
 		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
-			WriteCommandHelp(executionContext.Output);
+			WriteItemHelp(executionContext.Output);
 		}
 
 		public override IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {

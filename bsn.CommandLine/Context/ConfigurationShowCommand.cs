@@ -17,7 +17,7 @@ namespace bsn.CommandLine.Context {
 		}
 
 		protected override CommandBase<TExecutionContext> CreateActionCommand(IConfigurationRead<TExecutionContext> item) {
-			throw new NotImplementedException();
+			return new ConfigurationShowActionCommand<TExecutionContext>(ParentContext, item);
 		}
 	}
 }

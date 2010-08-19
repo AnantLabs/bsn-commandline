@@ -26,7 +26,7 @@ namespace bsn.CommandLine.Context {
 		}
 
 		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
-			owner.WriteCommandHelp(executionContext.Output);
+			owner.WriteItemHelp(executionContext.Output);
 		}
 	}
 }

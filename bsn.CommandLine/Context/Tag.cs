@@ -10,6 +10,12 @@ namespace bsn.CommandLine.Context {
 		private readonly string name;
 		private readonly bool optional;
 		private readonly string patternHelp;
+		private TValue @default;
+		private bool hasDefault;
+
+		public Tag(string name, string description): this(name, description, false, null) {}
+
+		public Tag(string name, string description, string patternHelp): this(name, description, false, patternHelp) {}
 
 		public Tag(string name, string description, bool optional): this(name, description, optional, null) {}
 
@@ -52,6 +58,17 @@ namespace bsn.CommandLine.Context {
 			return value;
 		}
 
+		public Tag<TValue> SetDefault(TValue value) {
+			@default = value;
+			hasDefault = true;
+			return this;
+		}
+
+		bool ITagItem.TryGetDefault(out object value) {
+			value = @default;
+			return hasDefault;
+		}
+
 		public string Description {
 			get {
 				return description;
@@ -76,8 +93,8 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		object ITagItem.ParseValue(string value) {
-			return ParseValue(value);
+		object ITagItem.ParseValue(string stringValue) {
+			return ParseValue(stringValue);
 		}
 	}
 }
