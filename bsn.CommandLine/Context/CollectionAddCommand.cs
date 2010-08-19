@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal class CollectionAddCommand: CollectionCommandBase {
-		public CollectionAddCommand(ContextBase owner): base(owner) {}
+	internal class CollectionAddCommand<TExecutionContext>: CollectionCommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		public CollectionAddCommand(ContextBase<TExecutionContext> owner): base(owner) {}
 
 		public override string Description {
 			get {
@@ -17,7 +16,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		protected override CommandBase CreateActionCommand(CollectionBase item) {
+		protected override CommandBase<TExecutionContext> CreateActionCommand(CollectionBase<TExecutionContext> item) {
 			throw new NotImplementedException();
 		}
 	}

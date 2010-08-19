@@ -5,30 +5,50 @@ using System.IO;
 using System.Text;
 
 namespace bsn.CommandLine.Context {
-	public abstract class CommandBase: IContextItem {
-		public static IEnumerable<T> Filter<T>(IEnumerable<T> items, string startsWith) where T: IContextItem {
-			foreach (T item in items) {
+	public abstract class CommandBase<TExecutionContext>: IContextItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		public static IEnumerable<TItem> Filter<TItem>(IEnumerable<TItem> items, string startsWith) where TItem: INamedItem {
+			foreach (TItem item in items) {
 				if (string.IsNullOrEmpty(startsWith) || item.Name.StartsWith(startsWith, StringComparison.OrdinalIgnoreCase)) {
 					yield return item;
 				}
 			}
 		}
 
-		private readonly ContextBase parentContext;
+		private readonly ContextBase<TExecutionContext> parentContext;
 
-		protected CommandBase(ContextBase parentContext) {
+		protected CommandBase(ContextBase<TExecutionContext> parentContext) {
 			this.parentContext = parentContext;
 		}
 
-		public ContextBase ParentContext {
+		public ContextBase<TExecutionContext> ParentContext {
 			get {
 				return parentContext;
 			}
 		}
 
-		public abstract void Execute(IExecutionContext executionContext, IDictionary<string, object> tags);
+		public abstract void Execute(TExecutionContext executionContext, IDictionary<string, object> tags);
 
-		internal void ExecuteInternal(IExecutionContext executionContext, IDictionary<string, string> namedTags, IList<string> unnamedTags) {
+		public virtual IEnumerable<ITagItem> GetCommandTags() {
+			yield break;
+		}
+
+		protected internal void WriteNameLine(TextWriter writer, string prefix) {
+			int padding = 14;
+			if (!string.IsNullOrEmpty(prefix)) {
+				writer.Write(prefix);
+				writer.Write(' ');
+				padding -= (prefix.Length+1);
+			}
+			writer.Write(Name);
+			padding -= Name.Length;
+			while (padding-- > 0) {
+				writer.Write(' ');
+			}
+			writer.Write(" - ");
+			writer.WriteLine(Description);
+		}
+
+		internal void ExecuteInternal(TExecutionContext executionContext, IDictionary<string, string> namedTags, IList<string> unnamedTags) {
 			Dictionary<string, object> tags = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 			foreach (ITagItem tag in GetCommandTags()) {
 				string stringValue;
@@ -61,22 +81,6 @@ namespace bsn.CommandLine.Context {
 			Execute(executionContext, tags);
 		}
 
-		protected internal void WriteNameLine(TextWriter writer, string prefix) {
-			int padding = 14;
-			if (!string.IsNullOrEmpty(prefix)) {
-				writer.Write(prefix);
-				writer.Write(' ');
-				padding -= (prefix.Length+1);
-			}
-			writer.Write(Name);
-			padding -= Name.Length;
-			while (padding-- > 0) {
-				writer.Write(' ');
-			}
-			writer.Write(" - ");
-			writer.WriteLine(Description);
-		}
-
 		public abstract string Name {
 			get;
 		}
@@ -87,12 +91,12 @@ namespace bsn.CommandLine.Context {
 
 		public virtual void WriteCommandHelp(TextWriter writer) {
 			writer.WriteLine(Description);
-			using (IEnumerator<CommandBase> enumerator = GetAvailableCommands().GetEnumerator()) {
+			using (IEnumerator<CommandBase<TExecutionContext>> enumerator = GetAvailableCommands().GetEnumerator()) {
 				if (enumerator.MoveNext()) {
 					writer.WriteLine();
 					writer.WriteLine("Available commands:");
 					do {
-						CommandBase current = enumerator.Current;
+						CommandBase<TExecutionContext> current = enumerator.Current;
 						Debug.Assert(current != null);
 						current.WriteNameLine(writer, Name);
 					} while (enumerator.MoveNext());
@@ -100,13 +104,9 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public virtual IEnumerable<ITagItem> GetCommandTags() {
-			yield break;
-		}
-
-		public virtual IEnumerable<CommandBase> GetAvailableCommands() {
-			yield return new CommandHelpCommand(this, "?");
-			yield return new CommandHelpCommand(this, "help");
+		public virtual IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
+			yield return new CommandHelpCommand<TExecutionContext>(this, "?");
+			yield return new CommandHelpCommand<TExecutionContext>(this, "help");
 		}
 	}
 }

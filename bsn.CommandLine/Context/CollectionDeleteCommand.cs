@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace bsn.CommandLine.Context {
-	internal class CollectionDeleteCommand: CollectionCommandBase {
-		public CollectionDeleteCommand(ContextBase owner): base(owner) {}
+	internal class CollectionDeleteCommand<TExecutionContext>: CollectionCommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		public CollectionDeleteCommand(ContextBase<TExecutionContext> owner): base(owner) {}
 
 		public override string Description {
 			get {
@@ -16,7 +16,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		protected override CommandBase CreateActionCommand(CollectionBase item) {
+		protected override CommandBase<TExecutionContext> CreateActionCommand(CollectionBase<TExecutionContext> item) {
 			throw new NotImplementedException();
 		}
 	}

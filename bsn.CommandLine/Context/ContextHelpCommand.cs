@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal class ContextHelpCommand: CommandBase {
+	internal class ContextHelpCommand<TExecutionContext>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly string name;
 
-		public ContextHelpCommand(ContextBase parentContext, string name): base(parentContext) {
+		public ContextHelpCommand(ContextBase<TExecutionContext> parentContext, string name): base(parentContext) {
 			this.name = name;
 		}
 
@@ -21,19 +21,11 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override IEnumerable<CommandBase> GetAvailableCommands() {
-			yield break;
-		}
-
-		public override IEnumerable<ITagItem> GetCommandTags() {
-			yield return new Tag<string>("command", "The command name to get help for.", true);
-		}
-
-		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
+		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
 			object commandName;
 			if (tags.TryGetValue("command", out commandName)) {
 				bool commandFound = false;
-				foreach (CommandBase command in Filter(ParentContext.GetAvailable<CommandBase>(), (string)commandName)) {
+				foreach (CommandBase<TExecutionContext> command in Filter(ParentContext.GetAvailable<CommandBase<TExecutionContext>>(), (string)commandName)) {
 					command.WriteCommandHelp(executionContext.Output);
 					commandFound = true;
 				}
@@ -43,6 +35,14 @@ namespace bsn.CommandLine.Context {
 			} else {
 				ParentContext.WriteCommandHelp(executionContext.Output);
 			}
+		}
+
+		public override IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {
+			yield break;
+		}
+
+		public override IEnumerable<ITagItem> GetCommandTags() {
+			yield return new Tag<string>("command", "The command name to get help for.", true);
 		}
 	}
 }

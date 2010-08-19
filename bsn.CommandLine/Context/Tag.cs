@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,13 +6,12 @@ using System.Text;
 
 namespace bsn.CommandLine.Context {
 	public class Tag<TValue>: ITagItem {
-		private readonly string name;
 		private readonly string description;
+		private readonly string name;
 		private readonly bool optional;
 		private readonly string patternHelp;
 
-		public Tag(string name, string description, bool optional): this(name, description, optional, null) {
-		}
+		public Tag(string name, string description, bool optional): this(name, description, optional, null) {}
 
 		public Tag(string name, string description, bool optional, string patternHelp) {
 			if (string.IsNullOrEmpty(name)) {
@@ -42,6 +40,18 @@ namespace bsn.CommandLine.Context {
 			this.optional = optional;
 		}
 
+		public virtual TValue ParseValue(string stringValue) {
+			TValue value;
+			TypeConverter converter = TypeDescriptor.GetConverter(typeof(TValue));
+			if (converter == null) {
+				Debug.WriteLine("No type converter found");
+				value = (TValue)Convert.ChangeType(stringValue, typeof(TValue), CultureInfo.InvariantCulture);
+			} else {
+				value = (TValue)converter.ConvertFromInvariantString(stringValue);
+			}
+			return value;
+		}
+
 		public string Description {
 			get {
 				return description;
@@ -68,18 +78,6 @@ namespace bsn.CommandLine.Context {
 
 		object ITagItem.ParseValue(string value) {
 			return ParseValue(value);
-		}
-
-		public virtual TValue ParseValue(string stringValue) {
-			TValue value;
-			TypeConverter converter = TypeDescriptor.GetConverter(typeof(TValue));
-			if (converter == null) {
-				Debug.WriteLine("No type converter found");
-				value = (TValue)Convert.ChangeType(stringValue, typeof(TValue), CultureInfo.InvariantCulture);
-			} else {
-				value = (TValue)converter.ConvertFromInvariantString(stringValue);
-			}
-			return value;
 		}
 	}
 }

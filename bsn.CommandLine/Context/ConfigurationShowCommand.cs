@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace bsn.CommandLine.Context {
-	internal class ConfigurationShowCommand: ConfigurationCommandBase<IConfigurationRead> {
-		public ConfigurationShowCommand(ContextBase owner): base(owner) {}
+	internal class ConfigurationShowCommand<TExecutionContext>: ConfigurationCommandBase<TExecutionContext, IConfigurationRead<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		public ConfigurationShowCommand(ContextBase<TExecutionContext> owner): base(owner) {}
 
 		public override string Description {
 			get {
@@ -16,7 +16,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		protected override CommandBase CreateActionCommand(IConfigurationRead item) {
+		protected override CommandBase<TExecutionContext> CreateActionCommand(IConfigurationRead<TExecutionContext> item) {
 			throw new NotImplementedException();
 		}
 	}

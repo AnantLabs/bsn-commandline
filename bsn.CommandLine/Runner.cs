@@ -8,11 +8,11 @@ using bsn.CommandLine.Context;
 using bsn.CommandLine.Parser;
 
 namespace bsn.CommandLine {
-	public class Runner {
+	public class Runner<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private static readonly Regex isHelp = new Regex(@"^(\?|help)$", RegexOptions.CultureInvariant|RegexOptions.ExplicitCapture|RegexOptions.IgnoreCase);
-		private readonly IExecutionContext executionContext;
+		private readonly TExecutionContext executionContext;
 
-		public Runner(IExecutionContext executionContext) {
+		public Runner(TExecutionContext executionContext) {
 			if (executionContext == null) {
 				throw new ArgumentNullException("executionContext");
 			}
@@ -21,7 +21,7 @@ namespace bsn.CommandLine {
 		}
 
 		public void Run() {
-			RootContext rootContext = executionContext.RootContext;
+			RootContext<TExecutionContext> rootContext = executionContext.RootContext;
 			TextWriter output = executionContext.Output;
 			Debug.Assert(rootContext != null);
 			executionContext.Context = rootContext;
@@ -31,10 +31,10 @@ namespace bsn.CommandLine {
 				output.Write(' ');
 				try {
 					ParsedLine commandLine = CommandLineParser.Parse(executionContext.Input.ReadLine());
-					CommandBase command = executionContext.Context;
+					CommandBase<TExecutionContext> command = executionContext.Context;
 					do {
 						string s = commandLine.Unnamed[0];
-						List<CommandBase> availableCommands = new List<CommandBase>(CommandBase.Filter(command.GetAvailableCommands(), s));
+						List<CommandBase<TExecutionContext>> availableCommands = new List<CommandBase<TExecutionContext>>(CommandBase<TExecutionContext>.Filter(command.GetAvailableCommands(), s));
 						if (availableCommands.Count < 1) {
 							if (command == executionContext.Context) {
 								output.WriteLine("The following command was not found: {0}", s);
@@ -43,7 +43,7 @@ namespace bsn.CommandLine {
 						}
 						if (availableCommands.Count > 1) {
 							output.WriteLine("Ambiguous command name for '{0}':", s);
-							foreach (CommandBase availableCommand in availableCommands) {
+							foreach (CommandBase<TExecutionContext> availableCommand in availableCommands) {
 								output.WriteLine(availableCommand.Name);
 							}
 							command = executionContext.Context;
@@ -66,7 +66,7 @@ namespace bsn.CommandLine {
 			} while (executionContext.Context != null);
 		}
 
-		private void WriteContextName(TextWriter output, ContextBase context, char separator) {
+		private void WriteContextName(TextWriter output, ContextBase<TExecutionContext> context, char separator) {
 			if (context != null) {
 				WriteContextName(output, context.ParentContext, ' ');
 				output.Write(context.Name);

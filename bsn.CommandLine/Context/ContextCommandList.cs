@@ -3,25 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	public class ContextCommandList: IEnumerable<CommandBase> {
-		private readonly ContextCommandList child;
-		private readonly SortedDictionary<string, CommandBase> commands = new SortedDictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
-		private readonly ContextCommandList parent;
+	public class ContextCommandList<TExecutionContext>: IEnumerable<CommandBase<TExecutionContext>> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		private readonly ContextCommandList<TExecutionContext> child;
+		private readonly SortedDictionary<string, CommandBase<TExecutionContext>> commands = new SortedDictionary<string, CommandBase<TExecutionContext>>(StringComparer.OrdinalIgnoreCase);
+		private readonly ContextCommandList<TExecutionContext> parent;
 
-		public ContextCommandList(ContextBase context): this(context, null) {}
+		public ContextCommandList(ContextBase<TExecutionContext> context): this(context, null) {}
 
-		private ContextCommandList(ContextBase context, ContextCommandList child) {
+		private ContextCommandList(ContextBase<TExecutionContext> context, ContextCommandList<TExecutionContext> child) {
 			if (context == null) {
 				throw new ArgumentNullException("context");
 			}
 			this.child = child;
-			foreach (CommandBase command in context.GetAvailableCommands()) {
+			foreach (CommandBase<TExecutionContext> command in context.GetAvailableCommands()) {
 				if (!IsNameUsedByChild(command.Name)) {
 					commands.Add(command.Name, command);
 				}
 			}
 			if (context.ParentContext != null) {
-				parent = new ContextCommandList(context.ParentContext, this);
+				parent = new ContextCommandList<TExecutionContext>(context.ParentContext, this);
 			}
 		}
 
@@ -31,7 +31,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public ContextCommandList Parent {
+		public ContextCommandList<TExecutionContext> Parent {
 			get {
 				return parent;
 			}
@@ -41,7 +41,7 @@ namespace bsn.CommandLine.Context {
 			return (child != null) && (child.commands.ContainsKey(name) || child.IsNameUsedByChild(name));
 		}
 
-		public IEnumerator<CommandBase> GetEnumerator() {
+		public IEnumerator<CommandBase<TExecutionContext>> GetEnumerator() {
 			throw new NotImplementedException();
 		}
 

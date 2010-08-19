@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	public class ExitCommand: CommandBase {
+	public class ExitCommand<TExecutionContext>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly string name;
 
-		public ExitCommand(RootContext rootContext, string name): base(rootContext) {
+		public ExitCommand(RootContext<TExecutionContext> rootContext, string name): base(rootContext) {
 			this.name = name;
 		}
 
@@ -21,7 +21,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
+		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
 			executionContext.Context = null;
 		}
 	}

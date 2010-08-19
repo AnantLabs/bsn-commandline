@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace bsn.CommandLine.Context {
-	public class CommandHelpCommand: CommandBase {
+	public class CommandHelpCommand<TExecutionContext>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly string name;
-		private readonly CommandBase owner;
+		private readonly CommandBase<TExecutionContext> owner;
 
-		public CommandHelpCommand(CommandBase owner, string name): base(owner.ParentContext) {
+		public CommandHelpCommand(CommandBase<TExecutionContext> owner, string name): base(owner.ParentContext) {
 			Debug.Assert(!String.IsNullOrEmpty(name));
 			this.owner = owner;
 			this.name = name;
@@ -25,7 +25,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
+		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
 			owner.WriteCommandHelp(executionContext.Output);
 		}
 	}

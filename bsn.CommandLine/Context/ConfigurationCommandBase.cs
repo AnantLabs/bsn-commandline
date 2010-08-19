@@ -1,10 +1,13 @@
-﻿namespace bsn.CommandLine.Context {
-	internal abstract class ConfigurationCommandBase<T>: ActionCommandBase<T> where T: class, IContextItem {
-		protected ConfigurationCommandBase(ContextBase owner): base(owner) {}
+﻿using System;
+using System.Collections.Generic;
 
-		protected override System.Collections.Generic.IEnumerable<T> GetAvailableItems() {
-			foreach (ConfigurationBase configurationItem in ParentContext.GetAvailable<ConfigurationBase>()) {
-				T item = configurationItem as T;
+namespace bsn.CommandLine.Context {
+	internal abstract class ConfigurationCommandBase<TExecutionContext, TItem>: ActionCommandBase<TExecutionContext, TItem> where TItem: class, IContextItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		protected ConfigurationCommandBase(ContextBase<TExecutionContext> owner): base(owner) {}
+
+		protected override IEnumerable<TItem> GetAvailableItems() {
+			foreach (ConfigurationBase<TExecutionContext> configurationItem in ParentContext.GetAvailable<ConfigurationBase<TExecutionContext>>()) {
+				TItem item = configurationItem as TItem;
 				if (item != null) {
 					yield return item;
 				}

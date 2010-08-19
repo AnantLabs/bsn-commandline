@@ -2,8 +2,8 @@
 using System.IO;
 
 namespace bsn.CommandLine.Context {
-	public interface IExecutionContext {
-		ContextBase Context {
+	public interface IExecutionContext<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		ContextBase<TExecutionContext> Context {
 			get;
 			set;
 		}
@@ -16,7 +16,7 @@ namespace bsn.CommandLine.Context {
 			get;
 		}
 
-		RootContext RootContext {
+		RootContext<TExecutionContext> RootContext {
 			get;
 		}
 	}

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 
 namespace bsn.CommandLine.Context {
-	internal class ParentContextCommand: CommandBase {
-		public ParentContextCommand(ContextBase parentContext): base(parentContext) {}
+	internal class ParentContextCommand<TExecutionContext>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		public ParentContextCommand(ContextBase<TExecutionContext> parentContext): base(parentContext) {}
 
 		public override string Description {
 			get {
@@ -17,7 +17,7 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
-		public override void Execute(IExecutionContext executionContext, IDictionary<string, object> tags) {
+		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
 			executionContext.Context = ParentContext.ParentContext;
 		}
 	}

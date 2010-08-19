@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace bsn.CommandLine.Context {
 	public interface ITagItem: INamedItem {
-		string PatternHelp {
+		bool Optional {
 			get;
 		}
 
-		bool Optional {
+		string PatternHelp {
 			get;
 		}
 

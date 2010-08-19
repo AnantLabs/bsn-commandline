@@ -5,11 +5,11 @@ using System.IO;
 using bsn.CommandLine.Context;
 
 namespace bsn.CommandLine {
-	public class CommandLineContext<T>: IExecutionContext where T: RootContext {
+	public class CommandLineContext<TExecutionContext, T>: IExecutionContext<TExecutionContext> where T: RootContext<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		private readonly TextReader input;
 		private readonly TextWriter output;
 		private readonly T rootContext;
-		private ContextBase context;
+		private ContextBase<TExecutionContext> context;
 
 		public CommandLineContext(T rootContext, TextReader input, TextWriter output) {
 			if (rootContext == null) {
@@ -32,7 +32,13 @@ namespace bsn.CommandLine {
 			}
 		}
 
-		public ContextBase Context {
+		RootContext<TExecutionContext> IExecutionContext<TExecutionContext>.RootContext {
+			get {
+				return RootContext;
+			}
+		}
+
+		public ContextBase<TExecutionContext> Context {
 			get {
 				return context;
 			}
@@ -51,12 +57,6 @@ namespace bsn.CommandLine {
 		public TextReader Input {
 			get {
 				return input;
-			}
-		}
-
-		RootContext IExecutionContext.RootContext {
-			get {
-				return rootContext;
 			}
 		}
 	}
