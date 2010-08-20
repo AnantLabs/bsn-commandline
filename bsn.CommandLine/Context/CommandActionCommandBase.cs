@@ -3,10 +3,8 @@
 namespace bsn.CommandLine.Context {
 	internal abstract class CommandActionCommandBase<TExecutionContext, TItem>: CommandBase<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> where TItem: class, INamedItem {
 		private readonly TItem item;
-		private readonly CommandBase<TExecutionContext> owner;
 
 		public CommandActionCommandBase(CommandBase<TExecutionContext> owner, TItem item): base(owner) {
-			this.owner = owner;
 			this.item = item;
 		}
 

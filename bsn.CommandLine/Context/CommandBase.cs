@@ -37,18 +37,18 @@ namespace bsn.CommandLine.Context {
 			yield break;
 		}
 
-		public virtual IEnumerable<ITagItem> GetCommandTags() {
+		public virtual IEnumerable<ITagItem<TExecutionContext>> GetCommandTags() {
 			yield break;
 		}
 
 		public override void WriteItemHelp(TextWriter writer) {
 			writer.WriteLine(Description);
-			List<ITagItem> parameters = new List<ITagItem>(GetCommandTags());
+			List<ITagItem<TExecutionContext>> parameters = new List<ITagItem<TExecutionContext>>(GetCommandTags());
 			if (parameters.Count > 0) {
 				writer.WriteLine();
 				writer.WriteLine("Usage:");
 				WriteCommandName(writer);
-				foreach (ITagItem tag in parameters) {
+				foreach (ITagItem<TExecutionContext> tag in parameters) {
 					writer.Write(" [");
 					writer.Write(tag.Name);
 					writer.Write("=]");
@@ -57,7 +57,7 @@ namespace bsn.CommandLine.Context {
 				writer.WriteLine();
 				writer.WriteLine();
 				writer.WriteLine("Parameters:");
-				foreach (ITagItem parameter in parameters) {
+				foreach (ITagItem<TExecutionContext> parameter in parameters) {
 					writer.WriteLine(" {0,-14} - {1}", parameter.Name, parameter.Description);
 				}
 			}
@@ -83,7 +83,7 @@ namespace bsn.CommandLine.Context {
 
 		internal void ExecuteInternal(TExecutionContext executionContext, IDictionary<string, string> namedTags, IList<string> unnamedTags) {
 			Dictionary<string, object> tags = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-			foreach (ITagItem tag in GetCommandTags()) {
+			foreach (ITagItem<TExecutionContext> tag in GetCommandTags()) {
 				string stringValue;
 				if (namedTags.TryGetValue(tag.Name, out stringValue)) {
 					namedTags.Remove(tag.Name);
@@ -93,8 +93,8 @@ namespace bsn.CommandLine.Context {
 				}
 				if (stringValue == null) {
 					object defaultValue;
-					bool useDefault = tag.TryGetDefault(out defaultValue);
-					if (!tag.Optional) {
+					bool useDefault = tag.TryGetDefault(executionContext, out defaultValue);
+					if (!tag.GetOptional(executionContext)) {
 						StringBuilder prompt = new StringBuilder();
 						prompt.Append(' ');
 						prompt.Append(tag.Name);
@@ -106,14 +106,14 @@ namespace bsn.CommandLine.Context {
 						stringValue = executionContext.Input.ReadLine();
 						useDefault &= string.IsNullOrEmpty(stringValue);
 						if (!useDefault) {
-							tags.Add(tag.Name, tag.ParseValue(stringValue));
+							tags.Add(tag.Name, tag.ParseValue(executionContext, stringValue));
 						}
 					}
 					if (useDefault) {
 						tags.Add(tag.Name, defaultValue);
 					}
 				} else {
-					tags.Add(tag.Name, tag.ParseValue(stringValue));
+					tags.Add(tag.Name, tag.ParseValue(executionContext, stringValue));
 				}
 			}
 			if ((namedTags.Count+unnamedTags.Count) > 0) {

@@ -9,7 +9,7 @@ namespace bsn.CommandLine.Context {
 			Item.Add(executionContext, tags);
 		}
 
-		public override IEnumerable<ITagItem> GetCommandTags() {
+		public override IEnumerable<ITagItem<TExecutionContext>> GetCommandTags() {
 			return Item.GetAddColumns();
 		}
 	}

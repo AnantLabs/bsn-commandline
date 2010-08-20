@@ -36,8 +36,8 @@ namespace bsn.CommandLine.Context {
 			yield break;
 		}
 
-		public override IEnumerable<ITagItem> GetCommandTags() {
-			yield return new Tag<string>("command", "The command name to get help for.", true);
+		public override IEnumerable<ITagItem<TExecutionContext>> GetCommandTags() {
+			yield return new Tag<TExecutionContext, string>("command", "The command name to get help for.").SetOptional(context => true);
 		}
 	}
 }

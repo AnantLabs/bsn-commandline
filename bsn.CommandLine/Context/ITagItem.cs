@@ -1,17 +1,15 @@
 ﻿using System;
 
 namespace bsn.CommandLine.Context {
-	public interface ITagItem: INamedItem {
-		bool Optional {
-			get;
-		}
+	public interface ITagItem<TExecutionContext>: INamedItem where TExecutionContext: class, IExecutionContext<TExecutionContext> {
+		bool GetOptional(TExecutionContext executionContext);
 
 		string PatternHelp {
 			get;
 		}
 
-		object ParseValue(string stringValue);
+		object ParseValue(TExecutionContext executionContext, string stringValue);
 
-		bool TryGetDefault(out object value);
+		bool TryGetDefault(TExecutionContext executionContext, out object value);
 	}
 }

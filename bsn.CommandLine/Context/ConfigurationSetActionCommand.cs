@@ -9,7 +9,7 @@ namespace bsn.CommandLine.Context {
 			Item.SetConfiguration(executionContext, tags);
 		}
 
-		public override IEnumerable<ITagItem> GetCommandTags() {
+		public override IEnumerable<ITagItem<TExecutionContext>> GetCommandTags() {
 			return Item.GetWriteParameters();
 		}
 	}
