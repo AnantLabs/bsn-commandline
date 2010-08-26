@@ -31,6 +31,23 @@ namespace bsn.CommandLine.Context {
 			}
 		}
 
+		protected IEnumerable<T> Merge<T>(IEnumerable<T> existingItems, IEnumerable<T> newItems) {
+			if (existingItems != null) {
+				foreach (T item in existingItems) {
+					yield return item;
+				}
+			}
+			if (newItems != null) {
+				foreach (T item in newItems) {
+					yield return item;
+				}
+			}
+		}
+
+		protected IEnumerable<T> Merge<T>(IEnumerable<T> existingItems, params T[] newItems) {
+			return Merge(existingItems, (IEnumerable<T>)newItems);
+		}
+
 		public virtual void WriteItemHelp(TextWriter writer) {
 			WriteNameLine(writer, null);
 		}

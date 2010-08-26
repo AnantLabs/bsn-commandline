@@ -11,29 +11,9 @@ namespace bsn.CommandLine.Context {
 			this.name = name;
 		}
 
-		public override IEnumerable<ContextBase<TExecutionContext>> ChildContexts {
-			get {
-				yield break;
-			}
-		}
-
-		public override IEnumerable<CollectionBase<TExecutionContext>> Collections {
-			get {
-				yield break;
-			}
-		}
-
 		public override IEnumerable<CommandBase<TExecutionContext>> Commands {
 			get {
-				yield return new ExitCommand<TExecutionContext>(this, "exit");
-				yield return new ExitCommand<TExecutionContext>(this, "bye");
-				yield return new ExitCommand<TExecutionContext>(this, "quit");
-			}
-		}
-
-		public override IEnumerable<ConfigurationBase<TExecutionContext>> Configurations {
-			get {
-				yield break;
+				return Merge(base.Commands, new ExitCommand<TExecutionContext>(this, "exit"), new ExitCommand<TExecutionContext>(this, "bye"), new ExitCommand<TExecutionContext>(this, "quit"));
 			}
 		}
 
