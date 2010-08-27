@@ -48,7 +48,7 @@ namespace bsn.CommandLine.Context {
 			return Merge(existingItems, (IEnumerable<T>)newItems);
 		}
 
-		public virtual void WriteItemHelp(TextWriter writer) {
+		public virtual void WriteItemHelp(TextWriter writer, TExecutionContext executionContext) {
 			WriteNameLine(writer, null);
 		}
 

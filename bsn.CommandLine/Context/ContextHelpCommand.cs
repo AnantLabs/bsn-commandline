@@ -21,14 +21,14 @@ namespace bsn.CommandLine.Context {
 			if (tags.TryGetValue("command", out commandName)) {
 				bool commandFound = false;
 				foreach (CommandBase<TExecutionContext> command in Filter(ParentContext.GetAvailable<CommandBase<TExecutionContext>>(), (string)commandName)) {
-					command.WriteItemHelp(executionContext.Output);
+					command.WriteItemHelp(executionContext.Output, executionContext);
 					commandFound = true;
 				}
 				if (!commandFound) {
 					executionContext.Output.WriteLine("Unknown command: {0}", commandName);
 				}
 			} else {
-				ParentContext.WriteItemHelp(executionContext.Output);
+				ParentContext.WriteItemHelp(executionContext.Output, executionContext);
 			}
 		}
 

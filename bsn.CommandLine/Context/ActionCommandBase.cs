@@ -6,7 +6,7 @@ namespace bsn.CommandLine.Context {
 		protected ActionCommandBase(CommandBase<TExecutionContext> owner): base(owner) {}
 
 		public override void Execute(TExecutionContext executionContext, IDictionary<string, object> tags) {
-			WriteItemHelp(executionContext.Output);
+			WriteItemHelp(executionContext.Output, executionContext);
 		}
 
 		public override IEnumerable<CommandBase<TExecutionContext>> GetAvailableCommands() {

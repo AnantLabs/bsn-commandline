@@ -55,7 +55,7 @@ namespace bsn.CommandLine {
 					}
 					if (command != executionContext.Context) {
 						if ((commandLine.Unnamed.Count == 1) && (isHelp.IsMatch(commandLine.Unnamed[0]))) {
-							command.WriteItemHelp(executionContext.Output);
+							command.WriteItemHelp(executionContext.Output, executionContext);
 						} else {
 							command.ExecuteInternal(executionContext, commandLine.Named, commandLine.Unnamed);
 						}

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 
 namespace bsn.CommandLine.Context {
 	public class Tag<TExecutionContext, TValue>: ITagItem<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
@@ -28,14 +30,42 @@ namespace bsn.CommandLine.Context {
 			this.description = description;
 		}
 
+		private Exception BuildError(string baseMessage, string stringValue, IEnumerable<TValue> values) {
+			StringBuilder error = new StringBuilder();
+			error.AppendFormat(baseMessage, stringValue);
+			foreach (TValue potentialMatch in values) {
+				error.AppendLine();
+				error.AppendFormat(" {0}", potentialMatch);
+			}
+			return new InvalidOperationException(error.ToString());
+		}
+
 		public virtual TValue ParseValue(TExecutionContext executionContext, string stringValue) {
 			TValue value;
-			TypeConverter converter = TypeDescriptor.GetConverter(typeof(TValue));
-			if (converter == null) {
-				Debug.WriteLine("No type converter found");
-				value = (TValue)Convert.ChangeType(stringValue, typeof(TValue), CultureInfo.InvariantCulture);
+			if (typeof(TValue).IsEnum) {
+				List<TValue> potentialMatches = new List<TValue>();
+				foreach (TValue item in Enum.GetValues(typeof(TValue))) {
+					if (item.ToString().StartsWith(stringValue, StringComparison.OrdinalIgnoreCase)) {
+						potentialMatches.Add(item);
+					}
+				}
+				switch (potentialMatches.Count) {
+				case 0:
+					throw BuildError("The value '{0}' is not valid, possible values are:", stringValue, (IEnumerable<TValue>)Enum.GetValues(typeof(TValue)));
+				case 1:
+					value = potentialMatches[0];
+					break;
+				default:
+					throw BuildError("The value '{0}' is ambiguous:", stringValue, potentialMatches);
+				}
 			} else {
-				value = (TValue)converter.ConvertFromInvariantString(stringValue);
+				TypeConverter converter = TypeDescriptor.GetConverter(typeof(TValue));
+				if (converter == null) {
+					Debug.WriteLine("No type converter found");
+					value = (TValue)Convert.ChangeType(stringValue, typeof(TValue), CultureInfo.InvariantCulture);
+				} else {
+					value = (TValue)converter.ConvertFromInvariantString(stringValue);
+				}
 			}
 			return value;
 		}

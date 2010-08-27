@@ -41,7 +41,7 @@ namespace bsn.CommandLine.Context {
 			yield break;
 		}
 
-		public override void WriteItemHelp(TextWriter writer) {
+		public override void WriteItemHelp(TextWriter writer, TExecutionContext executionContext) {
 			writer.WriteLine(Description);
 			List<ITagItem<TExecutionContext>> parameters = new List<ITagItem<TExecutionContext>>(GetCommandTags());
 			if (parameters.Count > 0) {
@@ -52,7 +52,14 @@ namespace bsn.CommandLine.Context {
 					writer.Write(" [");
 					writer.Write(tag.Name);
 					writer.Write("=]");
+					bool optional = tag.GetOptional(executionContext);
+					if (optional) {
+						writer.Write('[');
+					}
 					writer.Write(tag.PatternHelp);
+					if (optional) {
+						writer.Write(']');
+					}
 				}
 				writer.WriteLine();
 				writer.WriteLine();
@@ -99,7 +106,7 @@ namespace bsn.CommandLine.Context {
 						prompt.Append(' ');
 						prompt.Append(tag.Name);
 						if (useDefault) {
-							prompt.AppendFormat(CultureInfo.InvariantCulture, "[{0}]", defaultValue);
+							prompt.AppendFormat(CultureInfo.InvariantCulture, " [{0}]", defaultValue);
 						}
 						prompt.Append(": ");
 						executionContext.Output.Write(prompt);
