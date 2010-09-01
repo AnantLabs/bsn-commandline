@@ -65,7 +65,7 @@ namespace bsn.CommandLine.Context {
 			}
 			if (ParentContext != null) {
 				foreach (CommandBase<TExecutionContext> command in ParentContext.GetAvailableCommands()) {
-					if (!(ReferenceEquals(command, this) || localCommands.ContainsKey(command.Name))) {
+					if ((command.Name != Name) && (!localCommands.ContainsKey(command.Name))) {
 						yield return command;
 					}
 				}
