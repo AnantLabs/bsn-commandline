@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="bsn.GoldParser, Version=1.0.3909.31041, Culture=neutral, PublicKeyToken=3d58c5c8efc41aa9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bsn.GoldParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -84,12 +88,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Parser\CommandLine.cgt" />
     <None Include="Parser\CommandLine.grm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\GoldParser\bsn.GoldParser\bsn.GoldParser.csproj">
-      <Project>{1A1A5AE9-7981-471C-9CC7-F7465E675A32}</Project>
-      <Name>bsn.GoldParser</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
