@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="bsn.GoldParser, Version=1.0.3909.31041, Culture=neutral, PublicKeyToken=3d58c5c8efc41aa9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\bsn.GoldParser.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.3.9345, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -46,10 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GoldParser\bsn.GoldParser\bsn.GoldParser.csproj">
-      <Project>{1A1A5AE9-7981-471C-9CC7-F7465E675A32}</Project>
-      <Name>bsn.GoldParser</Name>
-    </ProjectReference>
     <ProjectReference Include="..\bsn.CommandLine\bsn.CommandLine.csproj">
       <Project>{0F603313-DA30-4402-AB10-D0A94F01FA69}</Project>
       <Name>bsn.CommandLine</Name>
