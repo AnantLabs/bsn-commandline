@@ -1,11 +1,5 @@
-glob:*.user
 glob:*/bin/*
-<<<<<<< local
-<<<<<<< local
-glob:Bin/*
-=======
->>>>>>> other
-=======
->>>>>>> other
 glob:*/obj/*
 glob:*.suo
+glob:*.user
+glob:Lib/bsn.*
