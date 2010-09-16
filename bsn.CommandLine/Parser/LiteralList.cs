@@ -15,7 +15,7 @@ namespace bsn.CommandLine.Parser {
 		[Rule("<LiteralList> ::= <LiteralList> <Literal>")]
 		public LiteralList(LiteralList previous, LiteralToken value): this(previous, null, value) {}
 
-		[Rule("<LiteralList> ::= <LiteralList> <Literal> '=' <Literal>", ConstructorParameterMapping = new[] {0, 1, 3})]
+		[Rule("<LiteralList> ::= <LiteralList> <Literal> ~'=' <Literal>")]
 		public LiteralList(LiteralList previous, LiteralToken name, LiteralToken value) {
 			Debug.Assert(value != null);
 			this.previous = previous;
