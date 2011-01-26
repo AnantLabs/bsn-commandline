@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bsn.CommandLine", "bsn.CommandLine\bsn.CommandLine.csproj", "{0F603313-DA30-4402-AB10-D0A94F01FA69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bsn.CommandLine.Test", "bsn.CommandLine.Test\bsn.CommandLine.Test.csproj", "{1E42C4A2-5EFD-48CC-A7E1-DB40D5954E3B}"
