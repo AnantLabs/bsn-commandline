@@ -1,7 +1,7 @@
 ﻿// bsn CommandLine Library
 // -----------------------
 // 
-// Copyright 2010 by Arsène von Wyss - avw@gmx.ch
+// Copyright 2014 by Arsène von Wyss - avw@gmx.ch
 // 
 // Development has been supported by Sirius Technologies AG, Basel
 // 
@@ -30,6 +30,8 @@
 using System;
 using System.IO;
 
+using bsn.GoldParser.Text;
+
 namespace bsn.CommandLine.Context {
 	public interface IExecutionContext<TExecutionContext> where TExecutionContext: class, IExecutionContext<TExecutionContext> {
 		ContextBase<TExecutionContext> Context {
@@ -41,7 +43,7 @@ namespace bsn.CommandLine.Context {
 			get;
 		}
 
-		TextWriter Output {
+		RichTextWriter Output {
 			get;
 		}
 

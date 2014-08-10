@@ -1,7 +1,7 @@
 ﻿// bsn CommandLine Library
 // -----------------------
 // 
-// Copyright 2010 by Arsène von Wyss - avw@gmx.ch
+// Copyright 2014 by Arsène von Wyss - avw@gmx.ch
 // 
 // Development has been supported by Sirius Technologies AG, Basel
 // 
@@ -27,68 +27,66 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
+
 using System;
 
-using NUnit.Framework;
+using Xunit;
 
 namespace bsn.CommandLine.Parser {
-	[TestFixture]
-	public class CommandLineParserTest: AssertionHelper {
-		[Test]
+	public class CommandLineParserTest {
+		[Fact]
 		public void ConsistencyCheck() {
 			CommandLineParser.GetSemanticActions();
 		}
 
-		[Test]
+		[Fact]
 		public void ParseDotsCommand() {
 			ParsedLine parsedLine = CommandLineParser.Parse("..");
-			Expect(parsedLine.IsEmpty, EqualTo(false));
-			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] {".."}));
+			Assert.False(parsedLine.IsEmpty);
+			Assert.Single(parsedLine.Unnamed, "..");
 		}
 
-		[Test]
+		[Fact]
 		public void ParseEmpty() {
 			ParsedLine parsedLine = CommandLineParser.Parse("");
-			Expect(parsedLine.IsEmpty, EqualTo(true));
+			Assert.True(parsedLine.IsEmpty);
 		}
 
-		[Test]
+		[Fact]
 		public void ParseEmptyWithComment() {
 			ParsedLine parsedLine = CommandLineParser.Parse("# nothing to do here");
-			Expect(parsedLine.IsEmpty, EqualTo(true));
+			Assert.True(parsedLine.IsEmpty);
 		}
 
-		[Test]
-		[ExpectedException(typeof(FormatException))]
+		[Fact]
 		public void ParseLexicalError() {
-			CommandLineParser.Parse("error \"unclosed quoted value");
+			Assert.Throws<FormatException>(() => CommandLineParser.Parse("error \"unclosed quoted value"));
 		}
 
-		[Test]
+		[Fact]
 		public void ParseQuestionmarkCommand() {
 			ParsedLine parsedLine = CommandLineParser.Parse("?");
-			Expect(parsedLine.IsEmpty, EqualTo(false));
-			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] {"?"}));
+			Assert.False(parsedLine.IsEmpty);
+			Assert.Single(parsedLine.Unnamed, "?");
 		}
 
-		[Test]
+		[Fact]
 		public void ParseQuotedCommand() {
 			ParsedLine parsedLine = CommandLineParser.Parse(@"""help""");
-			Expect(parsedLine.IsEmpty, EqualTo(false));
-			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] {"help"}));
+			Assert.False(parsedLine.IsEmpty);
+			Assert.Single(parsedLine.Unnamed, "help");
 		}
 
-		[Test]
+		[Fact]
 		public void ParseSingleCommand() {
 			ParsedLine parsedLine = CommandLineParser.Parse("help");
-			Expect(parsedLine.IsEmpty, EqualTo(false));
-			Expect(parsedLine.Unnamed, Is.EquivalentTo(new[] {"help"}));
+			Assert.False(parsedLine.IsEmpty);
+			Assert.Single(parsedLine.Unnamed, "help");
 		}
 
-		[Test]
-		[ExpectedException(typeof(FormatException))]
+		[Fact]
 		public void ParseSyntaxError() {
-			CommandLineParser.Parse("error=value");
+			Assert.Throws<FormatException>(() => CommandLineParser.Parse("error=value"));
 		}
 	}
 }

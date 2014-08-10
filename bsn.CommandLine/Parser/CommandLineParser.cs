@@ -1,7 +1,7 @@
 ﻿// bsn CommandLine Library
 // -----------------------
 // 
-// Copyright 2010 by Arsène von Wyss - avw@gmx.ch
+// Copyright 2014 by Arsène von Wyss - avw@gmx.ch
 // 
 // Development has been supported by Sirius Technologies AG, Basel
 // 
@@ -42,7 +42,7 @@ namespace bsn.CommandLine.Parser {
 		internal static SemanticTypeActions<CliToken> GetSemanticActions() {
 			lock (sync) {
 				if (semanticActions == null) {
-					semanticActions = new SemanticTypeActions<CliToken>(CompiledGrammar.Load(typeof(CliToken), "CommandLine.cgt"));
+					semanticActions = new SemanticTypeActions<CliToken>(CompiledGrammar.Load(typeof(CliToken), "CommandLine.egt"));
 					semanticActions.Initialize();
 				}
 				return semanticActions;

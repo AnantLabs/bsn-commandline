@@ -13,8 +13,7 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <KeyContainerName>bsn</KeyContainerName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
+    <FileUpgradeFlags />
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
   </PropertyGroup>
@@ -45,15 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Parser\CommandLine.grm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Parser\CommandLine.egt" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="CommandLineContext.cs" />
     <Compile Include="Context\ActionCommandBase.cs" />
     <Compile Include="Context\CollectionAddActionCommand.cs" />
     <Compile Include="Context\CollectionAddCommand.cs" />
+    <Compile Include="Context\CollectionBase.cs" />
     <Compile Include="Context\CollectionCommandBase.cs" />
     <Compile Include="Context\CollectionDeleteActionCommand.cs" />
     <Compile Include="Context\CollectionDeleteCommand.cs" />
     <Compile Include="Context\CommandActionCommandBase.cs" />
     <Compile Include="Context\CommandBase.cs" />
+    <Compile Include="Context\ConfigurationBase.cs" />
     <Compile Include="Context\ConfigurationCommandBase.cs" />
     <Compile Include="Context\ConfigurationSetActionCommand.cs" />
     <Compile Include="Context\ConfigurationSetCommand.cs" />
@@ -62,34 +69,28 @@
     <Compile Include="Context\ContextBase.cs" />
     <Compile Include="Context\ContextCommandList.cs" />
     <Compile Include="Context\ContextHelpCommand.cs" />
+    <Compile Include="Context\ContextItem.cs" />
     <Compile Include="Context\ExitCommand.cs" />
     <Compile Include="Context\ICollectionAdd.cs" />
     <Compile Include="Context\ICollectionDelete.cs" />
     <Compile Include="Context\IConfigurationRead.cs" />
     <Compile Include="Context\IConfigurationWrite.cs" />
-    <Compile Include="Context\ContextItem.cs" />
-    <Compile Include="Context\CollectionBase.cs" />
-    <Compile Include="Context\ConfigurationBase.cs" />
     <Compile Include="Context\IExecutionContext.cs" />
-    <Compile Include="Context\INamedItemContainer.cs" />
     <Compile Include="Context\INamedItem.cs" />
+    <Compile Include="Context\INamedItemContainer.cs" />
     <Compile Include="Context\ITagItem.cs" />
-    <Compile Include="Context\Tag.cs" />
     <Compile Include="Context\ParentContextCommand.cs" />
+    <Compile Include="Context\RootContext.cs" />
+    <Compile Include="Context\Tag.cs" />
     <Compile Include="NamedItemAttibute.cs" />
     <Compile Include="Parser\CliToken.cs" />
-    <Compile Include="Parser\ParsedLine.cs" />
     <Compile Include="Parser\CommandLineParser.cs" />
     <Compile Include="Parser\LiteralList.cs" />
     <Compile Include="Parser\LiteralToken.cs" />
+    <Compile Include="Parser\ParsedLine.cs" />
     <Compile Include="Parser\QuotedLiteralToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Context\RootContext.cs" />
     <Compile Include="Runner.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Parser\CommandLine.cgt" />
-    <None Include="Parser\CommandLine.grm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
