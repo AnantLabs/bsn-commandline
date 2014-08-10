@@ -1,7 +1,7 @@
 ﻿// bsn CommandLine Library
 // -----------------------
 // 
-// Copyright 2010 by Arsène von Wyss - avw@gmx.ch
+// Copyright 2014 by Arsène von Wyss - avw@gmx.ch
 // 
 // Development has been supported by Sirius Technologies AG, Basel
 // 
@@ -27,41 +27,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
+
 using System;
 
-using NUnit.Framework;
+using Xunit;
 
 namespace bsn.CommandLine.Parser {
-	[TestFixture]
-	public class QuotedLiteralTokenTest: AssertionHelper {
-		[Test]
+	public class QuotedLiteralTokenTest {
+		[Fact]
 		public void UnquoteLiteralDoubleQuote() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@"""Quoted""""""""Twice"""), EqualTo("Quoted\"\"Twice"));
+			Assert.Equal("Quoted\"\"Twice", QuotedLiteralToken.UnquoteLiteral(@"""Quoted""""""""Twice"""));
 		}
 
-		[Test]
+		[Fact]
 		public void UnquoteLiteralEmpty() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@""""""), EqualTo(""));
+			Assert.Equal("", QuotedLiteralToken.UnquoteLiteral(@""""""));
 		}
 
-		[Test]
+		[Fact]
 		public void UnquoteLiteralQuoteEnd() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@"""End"""""""), EqualTo("End\""));
+			Assert.Equal("End\"", QuotedLiteralToken.UnquoteLiteral(@"""End"""""""));
 		}
 
-		[Test]
+		[Fact]
 		public void UnquoteLiteralQuoteMiddle() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@"""Quoted""""Once"""), EqualTo("Quoted\"Once"));
+			Assert.Equal("Quoted\"Once", QuotedLiteralToken.UnquoteLiteral(@"""Quoted""""Once"""));
 		}
 
-		[Test]
+		[Fact]
 		public void UnquoteLiteralQuoteStart() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@"""""""Start"""), EqualTo("\"Start"));
+			Assert.Equal("\"Start", QuotedLiteralToken.UnquoteLiteral(@"""""""Start"""));
 		}
 
-		[Test]
+		[Fact]
 		public void UnquoteLiteralSimple() {
-			Expect(QuotedLiteralToken.UnquoteLiteral(@"""Some text"""), EqualTo("Some text"));
+			Assert.Equal("Some text", QuotedLiteralToken.UnquoteLiteral(@"""Some text"""));
 		}
 	}
 }

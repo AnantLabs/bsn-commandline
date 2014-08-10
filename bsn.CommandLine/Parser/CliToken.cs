@@ -1,7 +1,7 @@
 ﻿// bsn CommandLine Library
 // -----------------------
 // 
-// Copyright 2010 by Arsène von Wyss - avw@gmx.ch
+// Copyright 2014 by Arsène von Wyss - avw@gmx.ch
 // 
 // Development has been supported by Sirius Technologies AG, Basel
 // 
@@ -35,7 +35,9 @@ namespace bsn.CommandLine.Parser {
 	[Terminal("(EOF)")]
 	[Terminal("(Error)")]
 	[Terminal("(Whitespace)")]
-	[Terminal("(Comment Line)")]
+	[Terminal("(Comment)")]
+	[Terminal("(NewLine)")]
+	[Terminal("(#)")]
 	[Terminal("=")]
 	public class CliToken: SemanticToken {}
 }
